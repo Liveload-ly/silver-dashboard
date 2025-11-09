@@ -9,7 +9,8 @@
 <body>
   <h1>Silver Market Dashboard</h1>
   <div id="gsr">Loading GSR...</div>
+<h2>SLV ETF Holdings (Institutional Demand)</h2><br/><canvas id="slvChart" width="400" height="200"></canvas>
+  <script src="script.js"></script>async function loadSLV() {<br/>  try {<br/>    const res = await fetch("https://www.ishares.com/us/products/239855/slv/1467271812596.ajax?fileType=csv");<br/>    const text = await res.text();<br/><br/>    // Parse CSV lines<br/>    const rows = text.split("\n").slice(1);<br/>    const dates = [];<br/>    const holdings = [];<br/><br/>    rows.forEach(row => {<br/>      const cols = row.split(",");<br/>      if (cols.length > 5) {<br/>        dates.push(cols[0]); // date<br/>        holdings.push(parseFloat(cols[5])); // holdings (in ounces)<br/>      }<br/>    });<br/><br/>    // Draw chart<br/>    new Chart(document.getElementById("slvChart"), {<br/>      type: "line",<br/>      data: {<br/>        labels: dates.reverse().slice(-60), // latest 60 days<br/>        datasets: [{<br/>          data: holdings.reverse().slice(-60),<br/>          borderWidth: 2<br/>        }]<br/>      },<br/>      options: {<br/>        responsive: true,<br/>        scales: { y: { beginAtZero: false } }<br/>      }<br/>    });<br/><br/>  } catch (err) {<br/>    console.log(err);<br/>  }<br/>}<br/><br/>loadSLV();
 
-  <script src="script.js"></script>
 </body>
 </html>
